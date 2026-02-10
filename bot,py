@@ -31,6 +31,8 @@ USER_SOUNDS = {
 @bot.event
 async def on_voice_state_update(member, before, after):
     if member.id == bot.user.id: return
+    
+    # เช็คตอนเข้าห้อง
     if before.channel is None and after.channel is not None:
         selected_sound = None
         
@@ -44,9 +46,10 @@ async def on_voice_state_update(member, before, after):
 
         try:
             vc = await after.channel.connect()
-            # บน Render ใช้ executable="ffmpeg" หรือไม่ต้องใส่ก็ได้ถ้าตั้ง Build Command ถูก
+            # บน Render ไม่ต้องใส่ .exe และต้องลง ffmpeg ใน Build Command
             vc.play(discord.FFmpegPCMAudio(selected_sound, options='-filter:a "volume=0.5"'))
             
+            # จำกัดเวลา 7 วินาที
             counter = 0
             while vc.is_playing() and counter < 7:
                 await asyncio.sleep(1)
@@ -56,8 +59,8 @@ async def on_voice_state_update(member, before, after):
             await vc.disconnect()
         except Exception as e:
             print(f"Error: {e}")
-            if member.guild.voice_client: await member.guild.voice_client.disconnect()
+            if member.guild.voice_client:
+                await member.guild.voice_client.disconnect()
 
-# ดึง Token จาก Environment ของ Render เท่านั้น
-token = os.getenv("DISCORD_TOKEN")
-bot.run(token)
+# รันบอทผ่าน Environment Variable
+bot.run(os.getenv("DISCORD_TOKEN"))
