@@ -67,4 +67,4 @@ async def on_voice_state_update(member, before, after):
             if member.guild.voice_client:
                 await member.guild.voice_client.disconnect()
 
-bot.run(os.getenv("MTQ2NjQxNzAxMTM5MDQxNDkxMw.Gn6yZ6.W_LYTxpoItyx_oXXijB06O9tm3L0u4IxoJ2pE0"))
+bot.run(os.getenv("DISCORD_TOKEN"))
